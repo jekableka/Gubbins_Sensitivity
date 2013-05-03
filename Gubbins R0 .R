@@ -1,5 +1,5 @@
 ##Recreating Gubbins et al 2008
-##Blue Tongue R0 Model with Two Hosts and One Vector
+##Bluetongue R0 Model with Two Hosts and One Vector
 ##Jessica Rowland April 2013
 
 ##Load Required Packages
@@ -12,7 +12,7 @@ library("lhs")
 ## 2. Parameters with LHS Output
 ## 3. R0 Model Components
 ## 4. R0 Models
-## 5. Visualization R0 Parameters and R0 Estimates
+## 5. Visualization of R0 Parameters and R0 Estimates
 
 ##Latin Hypercube Sampling of Parameters
 
