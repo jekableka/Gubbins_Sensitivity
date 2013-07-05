@@ -13,6 +13,7 @@ library("lhs")
 ## 3. R0 Model Components
 ## 4. R0 Models
 ## 5. Visualization of R0 Parameters and R0 Estimates
+## 6. Partial Rank Correlation Coefficient
 
 ##Latin Hypercube Sampling of Parameters
 
@@ -140,8 +141,304 @@ plot(R0data$VDeathRate,R0data$Cattle)
 lines(lowess(R0data$VDeathRate,R0data$Cattle))
 
 
+## Partial Rank Correlation Coefficient
+
+## Rank Transform Parameters
+
+rank.beta.vector <- rank(beta.vector)
+rank.d.sheep <- rank(d.sheep)
+rank.d.cattle <-rank(d.cattle)
+rank.beta.host <- rank(beta.host)
+rank.d.vector <- rank(d.vector)
+rank.bite <- rank(bite)
+rank.EIP.recip <-  rank(EIP.recip)
+rank.v.cattle <- rank(v.cattle)
+rank.v.sheep <- rank(v.sheep)
+rank.pb.cattle <- rank(pb.cattle)
+rank.pb.sheep <- rank(pb.sheep)
+rank.viremia.cattle.recip <- rank(viremia.cattle.recip)
+rank.viremia.sheep.recip <- rank(viremia.sheep.recip)
+rank.R0.cattle <- rank(R0.cattle)
+
+## Linear Regression of each input parameter
+## Cannot include d.sheep and d.cattle because they were not part of LHS
+## Excluded sheep parameters because only looking at R0.cattle
+
+## Beta.vector Input
+reg.beta.vector <- lm(rank.beta.vector ~ 
+                      rank.beta.host +
+                      rank.d.vector +
+                      rank.bite +
+                      rank.EIP.recip +
+                      rank.v.cattle +
+                      rank.pb.cattle +
+                      rank.viremia.cattle.recip)
+
+## Residuals Beta.vetor Input
+resid.beta.vector <- residuals(reg.beta.vector)
+
+## Beta.vector Output
+
+reg.R0.cattle.beta.vector <- lm(rank.R0.cattle ~ 
+                                  rank.beta.host +
+                                  rank.d.vector +
+                                  rank.bite +
+                                  rank.EIP.recip +
+                                  rank.v.cattle +
+                                  rank.pb.cattle +
+                                  rank.viremia.cattle.recip)
+
+## Residuals Beta.vector Output
+resid.R0.cattle.beta.vector <- residuals(reg.R0.cattle.beta.vector)
+
+## Plot Residuals Beta.vector
+
+plot(resid.beta.vector,resid.R0.cattle.beta.vector)
+
+## PRCC for Beta.vector
+
+Cor.beta.vector <- cor(resid.beta.vector,resid.R0.cattle.beta.vector)
+
+
+## Beta.host Input
+reg.beta.host <- lm( rank.beta.host~  rank.beta.vector+
+                        rank.d.vector +
+                        rank.bite +
+                        rank.EIP.recip +
+                        rank.v.cattle +
+                        rank.pb.cattle +
+                        rank.viremia.cattle.recip)
+
+## Residuals Beta.host Input
+resid.beta.host <- residuals(reg.beta.host)
+
+## Beta.host Output
+
+reg.R0.cattle.beta.host <- lm(rank.R0.cattle ~ 
+                                  rank.beta.vector +
+                                  rank.d.vector +
+                                  rank.bite +
+                                  rank.EIP.recip +
+                                  rank.v.cattle +
+                                  rank.pb.cattle +
+                                  rank.viremia.cattle.recip)
+
+## Residuals Beta.host Output
+resid.R0.cattle.beta.host <- residuals(reg.R0.cattle.beta.host)
+
+## Plot Residuals Beta.host
+
+plot(resid.beta.host,resid.R0.cattle.beta.host)
+
+## PRCC for Beta.host
+
+Cor.beta.host <- cor(resid.beta.host,resid.R0.cattle.beta.host)
 
 
 
+## D.vector Input
+reg.d.vector <- lm(rank.d.vector ~  rank.beta.host+
+                      rank.beta.vector+
+                       rank.bite +
+                       rank.EIP.recip +
+                       rank.v.cattle +
+                       rank.pb.cattle +
+                       rank.viremia.cattle.recip)
+
+## Residuals d.vector Input
+resid.d.vector <- residuals(reg.d.vector)
+
+## d.vector Output
+
+reg.R0.cattle.d.vector<- lm(rank.R0.cattle ~ 
+                                rank.beta.vector +
+                                rank.beta.host+
+                                rank.bite +
+                                rank.EIP.recip +
+                                rank.v.cattle +
+                                rank.pb.cattle +
+                                rank.viremia.cattle.recip)
+
+## Residuals d.vector Output
+resid.R0.cattle.d.vector <- residuals(reg.R0.cattle.d.vector)
+
+## Plot Residuals d.vector
+
+plot(resid.d.vector,resid.R0.cattle.d.vector)
+
+## PRCC for d.vector
+
+Cor.d.vector <- cor(resid.d.vector,resid.R0.cattle.d.vector)
+
+## bite Input
+reg.bite <- lm(rank.bite ~  rank.beta.host+
+                     rank.beta.vector+
+                     rank.d.vector+
+                     rank.EIP.recip +
+                     rank.v.cattle +
+                     rank.pb.cattle +
+                     rank.viremia.cattle.recip)
+
+## Residuals bite Input
+resid.bite <- residuals(reg.bite)
+
+## bite Output
+
+reg.R0.cattle.bite<- lm(rank.R0.cattle ~ 
+                              rank.beta.vector +
+                              rank.beta.host+
+                              rank.d.vector
+                              rank.EIP.recip +
+                              rank.v.cattle +
+                              rank.pb.cattle +
+                              rank.viremia.cattle.recip)
+
+## Residuals bite Output
+resid.R0.cattle.bite <- residuals(reg.R0.cattle.bite)
+
+## Plot Residuals bite
+
+plot(resid.bite,resid.R0.cattle.bite)
+
+## PRCC for bite
+
+Cor.bite <- cor(resid.bite,resid.R0.cattle.bite)
 
 
+## EIP.recip Input
+reg.EIP.recip <- lm(rank.EIP.recip ~  rank.beta.host+
+                 rank.beta.vector+
+                 rank.d.vector+
+                 rank.bite  +
+                 rank.v.cattle +
+                 rank.pb.cattle +
+                 rank.viremia.cattle.recip)
+
+## Residuals EIP.recip Input
+resid.EIP.recip <- residuals(reg.EIP.recip)
+
+## EIP.recip Output
+
+reg.R0.cattle.EIP.recip<- lm(rank.R0.cattle ~ 
+                          rank.beta.vector +
+                          rank.beta.host+
+                          rank.d.vector +
+                          rank.bite  +
+                          rank.v.cattle +
+                          rank.pb.cattle +
+                          rank.viremia.cattle.recip)
+
+## Residuals EIP.recip Output
+resid.R0.cattle.EIP.recip <- residuals(reg.R0.cattle.EIP.recip)
+
+## Plot Residuals EIP.recip
+
+plot(resid.EIP.recip,resid.R0.cattle.EIP.recip)
+
+## PRCC for EIP.recip
+
+Cor.EIP.recip <- cor(resid.EIP.recip,resid.R0.cattle.EIP.recip)
+
+
+## v.cattle Input
+reg.v.cattle <- lm(rank.v.cattle ~  rank.beta.host+
+                      rank.beta.vector+
+                      rank.d.vector+
+                      rank.bite  +
+                      rank.EIP.recip +
+                      rank.pb.cattle +
+                      rank.viremia.cattle.recip)
+
+## Residuals v.cattle Input
+resid.v.cattle <- residuals(reg.v.cattle)
+
+## v.cattle Output
+
+reg.R0.cattle.v.cattle <- lm(rank.R0.cattle ~ 
+                               rank.beta.vector +
+                               rank.beta.host+
+                               rank.d.vector +
+                               rank.bite  +
+                               rank.EIP.recip +
+                               rank.pb.cattle +
+                               rank.viremia.cattle.recip)
+
+## Residuals v.cattle Output
+resid.R0.cattle.v.cattle <- residuals(reg.R0.cattle.v.cattle)
+
+## Plot Residuals v.cattle
+
+plot(resid.v.cattle,resid.R0.cattle.v.cattle)
+
+## PRCC for v.cattle
+
+Cor.v.cattle <- cor(resid.v.cattle,resid.R0.cattle.v.cattle)
+
+
+## pb.cattle Input
+reg.pb.cattle <- lm( rank.pb.cattle ~  rank.beta.host+
+                     rank.beta.vector+
+                     rank.d.vector+
+                     rank.bite  +
+                     rank.EIP.recip +
+                     rank.v.cattle  +
+                     rank.viremia.cattle.recip)
+
+## Residuals pb.cattle Input
+resid.pb.cattle <- residuals(reg.pb.cattle)
+
+## pb.cattle Output
+
+reg.R0.cattle.pb.cattle <- lm(rank.R0.cattle ~ 
+                               rank.beta.vector +
+                               rank.beta.host+
+                               rank.d.vector +
+                               rank.bite  +
+                               rank.EIP.recip +
+                               rank.v.cattle +
+                               rank.viremia.cattle.recip)
+
+## Residuals pb.cattle Output
+resid.R0.cattle.pb.cattle <- residuals(reg.R0.cattle.pb.cattle)
+
+## Plot Residuals pb.cattle
+
+plot(resid.pb.cattle,resid.R0.cattle.pb.cattle)
+
+## PRCC for pb.cattle
+
+Cor.pb.cattle <- cor(resid.pb.cattle,resid.R0.cattle.pb.cattle)
+
+## viremia.cattle.recip Input
+reg.viremia.cattle.recip <- lm( rank.viremia.cattle.recip~  rank.beta.host+
+                      rank.beta.vector+
+                      rank.d.vector+
+                      rank.bite  +
+                      rank.EIP.recip +
+                      rank.v.cattle +
+                      rank.pb.cattle)
+
+## Residuals viremia.cattle.recip Input
+resid.viremia.cattle.recip <- residuals(reg.viremia.cattle.recip)
+
+## viremia.cattle.recip Output
+
+reg.R0.cattle.viremia.cattle.recip <- lm(rank.R0.cattle ~ 
+                                rank.beta.vector +
+                                rank.beta.host+
+                                rank.d.vector +
+                                rank.bite  +
+                                rank.EIP.recip +
+                                rank.pb.cattle +
+                                rank.v.cattle)
+
+## Residuals viremia.cattle.recip Output
+resid.R0.cattle.viremia.cattle.recip <- residuals(reg.R0.cattle.viremia.cattle.recip)
+
+## Plot Residuals viremia.cattle.recip
+
+plot(resid.viremia.cattle.recip,resid.R0.cattle.viremia.cattle.recip)
+
+## PRCC for viremia.cattle.recip
+
+Cor.viremia.cattle.recip <- cor(resid.viremia.cattle.recip,resid.R0.cattle.viremia.cattle.recip)
