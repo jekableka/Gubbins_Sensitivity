@@ -34,6 +34,8 @@ bitingrate.temp <- .0002*(LHStable[,8])*(LHStable[,8]-3.7)*(41.9-LHStable[,8])^(
 EIP.temp <- (1/(.0003*(LHStable[,8])*(LHStable[,8]-10.4)))
 d.vector.temp <- .009*exp(.16*LHStable[,8])
 
+EIP.temp[EIP.temp<0] <- Inf
+
 ## Adding Temperature Calibrated Parameters to the LHS Matrix
 
 LHStable[,9] <-bitingrate.temp
