@@ -2,6 +2,8 @@
 ##Bluetongue R0 Model with Two Hosts and One Vector
 ##Jessica Rowland April 2013
 
+##Testing Commit on 18July2013 JR
+
 ##Load Required Packages
 
 ##Package for Latin Hypercube Sampling
