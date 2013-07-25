@@ -19,6 +19,10 @@ library("lhs")
 
 ##Latin Hypercube Sampling of Parameters
 
+##Setting the Seed for the Random Number Generator
+
+set.seed(1)
+
 LHStest <-randomLHS(100,8)
 LHStable <-matrix(0,nrow=100,ncol=11)
 LHStable[,1] <-qunif(LHStest[,1],1,100)
@@ -30,19 +34,27 @@ LHStable[,6] <-qgamma(LHStest[,6],16.4)
 LHStable[,7] <-qgamma(LHStest[,7],20.6)
 LHStable[,8] <-qunif(LHStest[,8],0,35)
 
-##Temperature calibration of parameters
 
-bitingrate.temp <- .0002*(LHStable[,8])*(LHStable[,8]-3.7)*(41.9-LHStable[,8])^(1/27)
-EIP.temp <- (1/(.0003*(LHStable[,8])*(LHStable[,8]-10.4)))
-d.vector.temp <- .009*exp(.16*LHStable[,8])
+## Temperature function
 
-EIP.temp[EIP.temp<0] <- Inf
+temp.LHS <- LHStable[,8]
+
+temp.func <- function(temp){
+  bitingrate.temp <- .0002*(temp)*(temp-3.7)*(41.9-temp)^(1/27)
+  EIP.temp <- (1/(.0003*(temp)*(temp-10.4)))
+  d.vector.temp <- .009*exp(.16*temp)
+  EIP.temp[EIP.temp<0] <- Inf
+  return(list(bitingrate.temp=bitingrate.temp,EIP.temp=EIP.temp,d.vector.temp = d.vector.temp))
+}
+
+temp.values <- temp.func(temp.LHS)
+
 
 ## Adding Temperature Calibrated Parameters to the LHS Matrix
 
-LHStable[,9] <-bitingrate.temp
-LHStable[,10] <-EIP.temp
-LHStable[,11] <- d.vector.temp
+LHStable[,9] <- temp.values$bitingrate.temp
+LHStable[,10] <-temp.values$EIP.temp
+LHStable[,11] <-temp.values$d.vector.temp
 
 ## Range of Temperature Calibration Parameters 
 temperature <-c(0:35)
