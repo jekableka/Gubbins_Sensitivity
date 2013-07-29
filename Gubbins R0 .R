@@ -34,42 +34,79 @@ LHStable[,6] <-qgamma(LHStest[,6],16.4)
 LHStable[,7] <-qgamma(LHStest[,7],20.6)
 LHStable[,8] <-qunif(LHStest[,8],0,35)
 
-
-## Temperature function
+## Setting Temperature Value for Temperature functions
 
 temp.LHS <- LHStable[,8]
 
-temp.func <- function(temp){
-  bitingrate.temp <- .0002*(temp)*(temp-3.7)*(41.9-temp)^(1/27)
-  EIP.temp <- (1/(.0003*(temp)*(temp-10.4)))
-  d.vector.temp <- .009*exp(.16*temp)
-  EIP.temp[EIP.temp<0] <- Inf
-  return(list(bitingrate.temp=bitingrate.temp,EIP.temp=EIP.temp,d.vector.temp = d.vector.temp))
+## Biting Rate Temperature function
+
+## Function parameters
+
+a <-.0002 
+b <-3.7
+c <-41.9
+d <-1/27
+
+## Function 
+
+temp.func.br <- function(temp,a,b,c,d){
+  bitingrate.temp <- a*temp*(temp-b)*(c-temp)^(d)
+  return(bitingrate.temp=bitingrate.temp)
 }
 
-temp.values <- temp.func(temp.LHS)
+##Add values from function to table of values
+LHStable[,9] <-temp.func.br(temp=temp.LHS,a,b,c,d)
+
+## EIP Temperature function
+
+## Function parameters
+
+e <- 1
+f <- .0003
+g <- 10.4
 
 
-## Adding Temperature Calibrated Parameters to the LHS Matrix
+## Function 
 
-LHStable[,9] <- temp.values$bitingrate.temp
-LHStable[,10] <-temp.values$EIP.temp
-LHStable[,11] <-temp.values$d.vector.temp
+temp.func.EIP <- function(temp,e,f,g){
+  EIP.temp <- (e/(f*(temp)*(temp-g)))
+  EIP.temp[EIP.temp<0] <- Inf
+  return(EIP.temp=EIP.temp)
+}
+
+##Add values from function to table of values
+LHStable[,10] <-temp.func.EIP(temp=temp.LHS,e,f,g)
+
+## Vector Death Rate Temperature function
+
+## Function parameters
+
+h <- .009
+i <- .16
+
+## Function 
+
+temp.func.d.vec <- function(temp,h,i){
+  d.vector.temp <- h*exp(i*temp)
+  return(d.vector.temp=d.vector.temp)
+}
+
+##Add values from function to table of values
+LHStable[,11] <-temp.func.d.vec(temp=temp.LHS,h,i)
 
 ## Range of Temperature Calibration Parameters 
 temperature <-c(0:35)
 
-bitingrate.temp.range <- .0002*(temperature)*(temperature-3.7)*(41.9-temperature)^(1/27)
-EIP.temp.range <- (1/(.0003*(temperature)*(temperature-10.4)))
-d.vector.temp.range <- .009*exp(.16*temperature)
+bitingrate.temp.range <- a*(temperature)*(temperature-b)*(c-temperature)^(d)
+EIP.temp.range <- (e/(f*(temperature)*(temperature-g)))
+d.vector.temp.range <- h*exp(i*temperature)
 
-plot(temperature,bitingrate.temp.range)
+plot(temperature, bitingrate.temp.range)
 plot(temperature, EIP.temp.range)
 plot(temperature, d.vector.temp.range)
 
 
 ##Parameters
-
 
 beta.vector <- LHStable[,2] ## probabilty of transmission from vector to host
 d.sheep <- .01 ## infection induced mortality in sheep ranges from 0.001 to 0.01
