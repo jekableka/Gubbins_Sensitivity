@@ -40,22 +40,15 @@ temp.LHS <- LHStable[,8]
 
 ## Biting Rate Temperature function
 
-## Function parameters
-
-a <-.0002 
-b <-3.7
-c <-41.9
-d <-1/27
-
 ## Function 
 
-temp.func.br <- function(temp,a,b,c,d){
+temp.func.br <- function(temp,a=.0002,b=3.7,c=41.9,d=1/27){
   bitingrate.temp <- a*temp*(temp-b)*(c-temp)^(d)
   return(bitingrate.temp=bitingrate.temp)
 }
 
 ##Add values from function to table of values
-LHStable[,9] <-temp.func.br(temp=temp.LHS,a,b,c,d)
+LHStable[,9] <-temp.func.br(temp=temp.LHS)
 
 ## EIP Temperature function
 
