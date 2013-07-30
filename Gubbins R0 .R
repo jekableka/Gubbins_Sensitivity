@@ -74,7 +74,7 @@ LHStable[,11] <-temp.func.d.vec(temp=temp.LHS)
 ## Range of Temperature Calibration Parameters 
 temperature <-c(0:35)
 
-bitingrate.temp.range <- a*(temperature)*(temperature-b)*(c-temperature)^(d)
+bitingrate.temp.range <- temp.func.br(temp=temperature)
 EIP.temp.range <- (e/(f*(temperature)*(temperature-g)))
 d.vector.temp.range <- h*exp(i*temperature)
 
