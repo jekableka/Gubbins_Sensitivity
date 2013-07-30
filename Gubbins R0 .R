@@ -40,8 +40,6 @@ temp.LHS <- LHStable[,8]
 
 ## Biting Rate Temperature function
 
-## Function 
-
 temp.func.br <- function(temp,a=.0002,b=3.7,c=41.9,d=1/27){
   bitingrate.temp <- a*temp*(temp-b)*(c-temp)^(d)
   return(bitingrate.temp=bitingrate.temp)
@@ -52,40 +50,26 @@ LHStable[,9] <-temp.func.br(temp=temp.LHS)
 
 ## EIP Temperature function
 
-## Function parameters
 
-e <- 1
-f <- .0003
-g <- 10.4
-
-
-## Function 
-
-temp.func.EIP <- function(temp,e,f,g){
+temp.func.EIP <- function(temp,e=1,f=.0003,g=10.4){
   EIP.temp <- (e/(f*(temp)*(temp-g)))
   EIP.temp[EIP.temp<0] <- Inf
   return(EIP.temp=EIP.temp)
 }
 
 ##Add values from function to table of values
-LHStable[,10] <-temp.func.EIP(temp=temp.LHS,e,f,g)
+LHStable[,10] <-temp.func.EIP(temp=temp.LHS)
 
 ## Vector Death Rate Temperature function
 
-## Function parameters
-
-h <- .009
-i <- .16
-
-## Function 
-
-temp.func.d.vec <- function(temp,h,i){
+temp.func.d.vec <- function(temp,h=.009,i=.16){
   d.vector.temp <- h*exp(i*temp)
   return(d.vector.temp=d.vector.temp)
 }
 
 ##Add values from function to table of values
-LHStable[,11] <-temp.func.d.vec(temp=temp.LHS,h,i)
+LHStable[,11] <-temp.func.d.vec(temp=temp.LHS)
+
 
 ## Range of Temperature Calibration Parameters 
 temperature <-c(0:35)
